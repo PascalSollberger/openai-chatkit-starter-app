@@ -1,14 +1,13 @@
 "use client";
 
 import { useCallback } from "react";
-import { ChatKitPanel, type FactAction } from "@openai/chatkit"; // ✅ use the official ChatKit package
+import { ChatKitPanel, type FactAction } from "@/components/ChatKitPanel";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import type { ChatKitOptions } from "@openai/chatkit"; // ✅ import the type
 
-// 🧠 Playground configuration (your exported settings)
-const options: ChatKitOptions = {
+// ⬇️ Add your playground options here (no type import needed)
+const options = {
   api: {
-    // point to your deployed backend route
+    // make sure you have this route in your app
     url: "/api/chat",
   },
   theme: {
@@ -16,14 +15,8 @@ const options: ChatKitOptions = {
     radius: "pill",
     density: "spacious",
     color: {
-      accent: {
-        primary: "#711adb",
-        level: 1,
-      },
-      surface: {
-        background: "#e31c1c",
-        foreground: "#0f0f0f",
-      },
+      accent: { primary: "#711adb", level: 1 },
+      surface: { background: "#e31c1c", foreground: "#0f0f0f" },
     },
     typography: {
       baseSize: 18,
@@ -36,7 +29,6 @@ const options: ChatKitOptions = {
           style: "normal",
           display: "swap",
         },
-        // You can add additional font sources if needed
       ],
     },
   },
@@ -52,21 +44,18 @@ const options: ChatKitOptions = {
         icon: "book-open",
         pinned: false,
       },
-      // add more tools if you like
+      // ...more tools if you have them
     ],
   },
   startScreen: {
     greeting: "",
     prompts: [
-      {
-        icon: "circle-question",
-        label: "What is ChatKit?",
-        prompt: "What is ChatKit?",
-      },
-      // add more prompts here
+      { icon: "circle-question", label: "What is ChatKit?", prompt: "What is ChatKit?" },
+      // ...more prompts
     ],
   },
-};
+  // Optional: locale, header, widgets, etc.
+} as const;
 
 export default function App() {
   const { scheme, setScheme } = useColorScheme();
@@ -84,16 +73,4 @@ export default function App() {
   }, []);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-end bg-slate-100 dark:bg-slate-950">
-      <div className="mx-auto w-full max-w-5xl">
-        <ChatKitPanel
-          {...options}                       // ✅ inject all your playground settings
-          theme={options.theme}               // ✅ apply the same theme from playground
-          onWidgetAction={handleWidgetAction}
-          onResponseEnd={handleResponseEnd}
-          onThemeRequest={setScheme}
-        />
-      </div>
-    </main>
-  );
-}
+    <main className="flex min-h-screen flex-col items-center justify
