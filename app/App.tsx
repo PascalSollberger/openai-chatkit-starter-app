@@ -4,11 +4,10 @@ import { useCallback } from "react";
 import { ChatKitPanel, type FactAction } from "@/components/ChatKitPanel";
 import { useColorScheme } from "@/hooks/useColorScheme";
 
-// ⬇️ Add your playground options here (no type import needed)
+// --- Playground options (safe, plain JS object) ---
 const options = {
   api: {
-    // make sure you have this route in your app
-    url: "/api/chat",
+    url: "/api/chat", // your server route
   },
   theme: {
     colorScheme: "light",
@@ -44,23 +43,22 @@ const options = {
         icon: "book-open",
         pinned: false,
       },
-      // ...more tools if you have them
+      // add more tools if needed
     ],
   },
   startScreen: {
     greeting: "",
     prompts: [
       { icon: "circle-question", label: "What is ChatKit?", prompt: "What is ChatKit?" },
-      // ...more prompts
+      // add more prompts if needed
     ],
   },
-  // Optional: locale, header, widgets, etc.
 } as const;
 
 export default function App() {
   const { scheme, setScheme } = useColorScheme();
 
-  const handleWidgetAction = useCallback(async (action: FactAction) => {
+  const handleWidgetAction = useCallback((action: FactAction) => {
     if (process.env.NODE_ENV !== "production") {
       console.info("[ChatKitPanel] widget action", action);
     }
@@ -73,4 +71,18 @@ export default function App() {
   }, []);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify
+    <main className="flex min-h-screen flex-col items-center justify-end bg-slate-100 dark:bg-slate-950">
+      <div className="mx-auto w-full max-w-5xl">
+        <ChatKitPanel
+          api={options.api}
+          theme={options.theme}               // you can swap to 'scheme' if your hook returns a full theme object
+          composer={options.composer}
+          startScreen={options.startScreen}
+          onWidgetAction={handleWidgetAction}
+          onResponseEnd={handleResponseEnd}
+          onThemeRequest={setScheme}
+        />
+      </div>
+    </main>
+  );
+}
