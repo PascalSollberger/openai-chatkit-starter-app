@@ -4,12 +4,11 @@ import { useCallback } from "react";
 import { ChatKitPanel, type FactAction } from "@/components/ChatKitPanel";
 import { useColorScheme } from "@/hooks/useColorScheme";
 
-// --- Playground options (safe, plain JS object) ---
+// Playground options (keep theme object here if your internal ChatKitPanel forwards it differently)
 const options = {
-  api: {
-    url: "/api/chat", // your server route
-  },
-  theme: {
+  api: { url: "/api/chat" },
+  // Keep your full visual theme here for now (not passed to 'theme' prop directly)
+  visualTheme: {
     colorScheme: "light",
     radius: "pill",
     density: "spacious",
@@ -43,20 +42,18 @@ const options = {
         icon: "book-open",
         pinned: false,
       },
-      // add more tools if needed
     ],
   },
   startScreen: {
     greeting: "",
     prompts: [
       { icon: "circle-question", label: "What is ChatKit?", prompt: "What is ChatKit?" },
-      // add more prompts if needed
     ],
   },
 } as const;
 
 export default function App() {
-  const { scheme, setScheme } = useColorScheme();
+  const { scheme, setScheme } = useColorScheme(); // likely "light" | "dark"
 
   const handleWidgetAction = useCallback((action: FactAction) => {
     if (process.env.NODE_ENV !== "production") {
@@ -74,13 +71,17 @@ export default function App() {
     <main className="flex min-h-screen flex-col items-center justify-end bg-slate-100 dark:bg-slate-950">
       <div className="mx-auto w-full max-w-5xl">
         <ChatKitPanel
+          // 👇 'theme' expects a scheme string, not the full object
+          theme={scheme ?? "light"}
           api={options.api}
-          theme={options.theme}               // you can swap to 'scheme' if your hook returns a full theme object
           composer={options.composer}
           startScreen={options.startScreen}
           onWidgetAction={handleWidgetAction}
           onResponseEnd={handleResponseEnd}
           onThemeRequest={setScheme}
+          // If your ChatKitPanel supports passing full theme config, use a dedicated prop
+          // e.g. appearance={options.visualTheme} or options={...}
+          // appearance={options.visualTheme}
         />
       </div>
     </main>
